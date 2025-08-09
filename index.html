@@ -3,24 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <title>발록뿔 손익 계산기</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .calculator-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .title {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 2.2em;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group {
+      margin-bottom: 25px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e1e5e9;
+      border-radius: 12px;
+      font-size: 1.1em;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .unit-note {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    .calculate-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .calculate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .calculate-btn:active {
+      transform: translateY(0);
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      font-size: 1.1em;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .profit {
+      background: #d4edda;
+      border-left-color: #28a745;
+      color: #155724;
+    }
+
+    .loss {
+      background: #f8d7da;
+      border-left-color: #dc3545;
+      color: #721c24;
+    }
+
+    .neutral {
+      background: #e2e3e5;
+      border-left-color: #6c757d;
+      color: #383d41;
+    }
+  </style>
 </head>
 <body>
-  <h2>🧮 발록뿔 손익 계산기</h2>
+  <div class="calculator-container">
+    <h1 class="title">🧮 발록뿔 손익 계산기</h1>
 
-  <label>에테르 단가:</label>
-  <input type="number" id="etherPrice"><br>
+    <div class="input-group">
+      <label for="etherPrice">에테르 단가:</label>
+      <input type="number" id="etherPrice" placeholder="예: 15000">
+      <div class="unit-note">※ 가격은 만 단위로 입력해주세요 (예: 15000 = 1만5천)</div>
+    </div>
 
-  <label>에테르 보상 갯수:</label>
-  <input type="number" id="etherAmount"><br>
+    <div class="input-group">
+      <label for="etherAmount">에테르 보상 갯수:</label>
+      <input type="number" id="etherAmount" placeholder="예: 5">
+    </div>
 
-  <label>발록뿔 단가:</label>
-  <input type="number" id="hornPrice"><br>
+    <div class="input-group">
+      <label for="hornPrice">발록뿔 단가:</label>
+      <input type="number" id="hornPrice" placeholder="예: 8000">
+      <div class="unit-note">※ 가격은 만 단위로 입력해주세요 (예: 8000 = 8천)</div>
+    </div>
 
-  <label>뿔 기여 갯수:</label>
-  <input type="number" id="hornAmount"><br><br>
+    <div class="input-group">
+      <label for="hornAmount">뿔 기여 갯수:</label>
+      <input type="number" id="hornAmount" placeholder="예: 3">
+    </div>
 
-  <button onclick="calculateProfit()">계산하기</button>
-  <p id="result"></p>
+    <button class="calculate-btn" onclick="calculateProfit()">계산하기</button>
+    
+    <div id="result" class="result" style="display: none;"></div>
+  </div>
 
   <script>
     function calculateProfit() {
@@ -29,26 +167,43 @@
       const hornPrice = parseFloat(document.getElementById('hornPrice').value);
       const hornAmount = parseFloat(document.getElementById('hornAmount').value);
 
+      const resultDiv = document.getElementById('result');
+      
       if (isNaN(etherPrice) || isNaN(etherAmount) || isNaN(hornPrice) || isNaN(hornAmount)) {
-        document.getElementById('result').innerText = "⚠️ 모든 값을 입력해주세요.";
+        resultDiv.innerText = "⚠️ 모든 값을 입력해주세요.";
+        resultDiv.className = 'result';
+        resultDiv.style.display = 'block';
         return;
       }
 
       const etherTotal = etherPrice * etherAmount;
       const hornTotal = hornPrice * hornAmount;
+      const profit = etherTotal - hornTotal;
 
-      let message = `에테르 총 가치: ${etherTotal} / 발록뿔 총 기여: ${hornTotal}\n`;
+      let message = `💰 에테르 총 가치: ${etherTotal.toLocaleString()}원\n`;
+      message += `🦄 발록뿔 총 기여: ${hornTotal.toLocaleString()}원\n\n`;
 
-      if (etherTotal > hornTotal) {
-        message += "✅ 이익입니다!";
-      } else if (etherTotal < hornTotal) {
-        message += "❌ 손해입니다!";
+      if (profit > 0) {
+        message += `✅ 이익입니다! (+${profit.toLocaleString()}원)`;
+        resultDiv.className = 'result profit';
+      } else if (profit < 0) {
+        message += `❌ 손해입니다! (${profit.toLocaleString()}원)`;
+        resultDiv.className = 'result loss';
       } else {
-        message += "➖ 손익이 동일합니다.";
+        message += `➖ 손익이 동일합니다.`;
+        resultDiv.className = 'result neutral';
       }
 
-      document.getElementById('result').innerText = message;
+      resultDiv.innerText = message;
+      resultDiv.style.display = 'block';
     }
+
+    // Enter 키로 계산 실행
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        calculateProfit();
+      }
+    });
   </script>
 </body>
 </html>
