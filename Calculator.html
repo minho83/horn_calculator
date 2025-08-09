@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>발록뿔 손익 계산기</title>
+</head>
+<body>
+  <h2>🧮 발록뿔 손익 계산기</h2>
+
+  <label>에테르 단가:</label>
+  <input type="number" id="etherPrice"><br>
+
+  <label>에테르 보상 갯수:</label>
+  <input type="number" id="etherAmount"><br>
+
+  <label>발록뿔 단가:</label>
+  <input type="number" id="hornPrice"><br>
+
+  <label>뿔 기여 갯수:</label>
+  <input type="number" id="hornAmount"><br><br>
+
+  <button onclick="calculateProfit()">계산하기</button>
+  <p id="result"></p>
+
+  <script>
+    function calculateProfit() {
+      const etherPrice = parseFloat(document.getElementById('etherPrice').value);
+      const etherAmount = parseFloat(document.getElementById('etherAmount').value);
+      const hornPrice = parseFloat(document.getElementById('hornPrice').value);
+      const hornAmount = parseFloat(document.getElementById('hornAmount').value);
+
+      if (isNaN(etherPrice) || isNaN(etherAmount) || isNaN(hornPrice) || isNaN(hornAmount)) {
+        document.getElementById('result').innerText = "⚠️ 모든 값을 입력해주세요.";
+        return;
+      }
+
+      const etherTotal = etherPrice * etherAmount;
+      const hornTotal = hornPrice * hornAmount;
+
+      let message = `에테르 총 가치: ${etherTotal} / 발록뿔 총 기여: ${hornTotal}\n`;
+
+      if (etherTotal > hornTotal) {
+        message += "✅ 이익입니다!";
+      } else if (etherTotal < hornTotal) {
+        message += "❌ 손해입니다!";
+      } else {
+        message += "➖ 손익이 동일합니다.";
+      }
+
+      document.getElementById('result').innerText = message;
+    }
+  </script>
+</body>
+</html>
